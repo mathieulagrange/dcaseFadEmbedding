@@ -158,3 +158,12 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+
+# Dcase Dataset
+DCASE_2023_Challenge_Task_7_Submission
+DCASE_2023_Challenge_Task_7_Dataset
+DCASE_2023_Challenge_Task_7_DevDataset
+doce
+0-old
+experiment
