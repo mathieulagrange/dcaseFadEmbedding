@@ -11,7 +11,7 @@ def main(config):
   reference = 'eval'
   embedding_list = config.emb
 
-  excel_file = 'fadScores.xlsx'
+  excel_file = './excel_files/fadScores.xlsx'
 
   for embedding in embedding_list:
     (data_pred, settings_pred_total, header_pred_total) = main_doce.experiment.get_output(

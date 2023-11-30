@@ -3,8 +3,8 @@ from scipy.stats import pearsonr
 import numpy as np
 
 # Read the Excel files
-df_fad_scores = pd.read_excel('fadScores.xlsx', index_col='alg_code', sheet_name=None)
-df_perceptual_eval = pd.read_excel('perceptualEval.xlsx', index_col='alg_code', sheet_name=None)
+df_fad_scores = pd.read_excel('./excel_files/fadScores.xlsx', index_col='alg_code', sheet_name=None)
+df_perceptual_eval = pd.read_excel('./excel_files/perceptualEval.xlsx', index_col='alg_code', sheet_name=None)
 
 # Initialize a dictionary to store correlations
 correlation_dict = {}
@@ -86,4 +86,4 @@ correlation_df = correlation_df.rename_axis(index={'level_0': 'criteria', 'level
 correlation_df = correlation_df.reorder_levels([1, 0], axis=0).sort_index(axis=0, level=[0, 1]).sort_index(axis=1)
 
 # Save the final_df DataFrame to an Excel file
-correlation_df.to_excel('correlation.xlsx')
+correlation_df.to_excel('./excel_files/correlation.xlsx')
