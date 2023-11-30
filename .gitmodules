@@ -1,0 +1,3 @@
+[submodule "fadtk"]
+	path = fadtk
+	url = git@github.com:modantailleur/fadtk.git
