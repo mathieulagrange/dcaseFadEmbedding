@@ -34,8 +34,12 @@ experiment.set_path('correlation', exp_path+experiment.name+'/correlation/', for
 
 experiment.add_plan('fad',
   category = ['dog_bark', 'footstep', 'gunshot', 'keyboard', 'moving_motor_vehicle', 'rain', 'sneeze_cough'],
-  embedding = ['vggish', 'clap-2023', 'L-CLAP', 'MERT', 'CDPAM', 'EnCodec', 'EnCodec_48k', 'DAC'],
-  system = ['TASys02', 'Baseline'],
+  embedding = ['vggish', 'clap-2023', 'clap-laion-audio', 'MERT-v1-95M-1', 'encodec-emb', 'encodec-emb-48k'],
+  # system = ['TASys02', 'TASys03', 'TASys04', 'TASys05', 'TASys06', 'TASys07', 'TASys08', 'TASys10', 'TASys11',\
+  #           'TBSys01', 'TBSys02', 'TBSys03', 'TBSys04', 'TBSys05', 'TBSys07', 'TBSys08', 'TBSys09', 'TBSys11', \
+  #             'TBSys14', 'TBSys15', 'TBSys16', 'TBSys17', 'TBSys18', 'TBSys19', 'TBSys20', 'TBSys21', 'TBSys22', \
+  #               'TBSys23', 'TBSys24', 'TBSys25', 'TBSys26', 'TBSys27', 'TBSys28', 'TBSys29', 'TBSys30', 'TBSys31'],
+  system = ['TBSys09', 'TBSys18', 'TBSys14', 'TBSys24', 'TASys08', 'TASys02', 'TASys03', 'TASys11'],
   reference = ['dev', 'eval']
 )
 
@@ -51,6 +55,10 @@ experiment.set_metric(
   )
 
 def step(setting, experiment):
+
+    print('XXXXXXXX ONGOING SETTING XXXXXXXX')
+    print(setting.identifier())
+
     system = setting.system
     category = setting.category
 
@@ -64,13 +72,14 @@ def step(setting, experiment):
     track = system[1]
     audio_path = './DCASE_2023_Challenge_Task_7_Submission/AudioFiles/Submissions/' + track + '/' + system + '/' + category + '/'
 
-    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path)
+    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1)
     
-    print(f'FAD SCORE: {fad.score}')
+    print(f'FAD SCORE: {fad}')
 
-    file_path = experiment.path.fad + setting.identifier() + '_fad.pkl'
-    with open(file_path, 'wb') as file:
-        pickle.dump(fad, file)
+    file_path = experiment.path.fad + setting.identifier() + '_fad'
+    np.save(file_path, fad)
+    # with open(file_path, 'wb') as file:
+    #     pickle.dump(fad, file)
         
 # invoke the command line management of the doce package
 if __name__ == "__main__":
