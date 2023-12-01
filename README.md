@@ -5,6 +5,7 @@
 Make sure you have downloaded the two datasets which should be named "DCASE_2023_Challenge_Task_7_Submission" and "DCASE_2023_Challenge_Task_7_Dataset" and which should be placed in the main folder. 
 
 Install 'requirements.txt' before running the code.
+Launch 'get_doce.py' to get the latest version of doce (see doce documentation here: [DOCE](https://doce.readthedocs.io/en/latest/))
 
 ## FAD calculation
 
