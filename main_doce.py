@@ -39,8 +39,8 @@ experiment.add_plan('fad',
   #           'TBSys01', 'TBSys02', 'TBSys03', 'TBSys04', 'TBSys05', 'TBSys07', 'TBSys08', 'TBSys09', 'TBSys11', \
   #             'TBSys14', 'TBSys15', 'TBSys16', 'TBSys17', 'TBSys18', 'TBSys19', 'TBSys20', 'TBSys21', 'TBSys22', \
   #               'TBSys23', 'TBSys24', 'TBSys25', 'TBSys26', 'TBSys27', 'TBSys28', 'TBSys29', 'TBSys30', 'TBSys31'],
-  system = ['TBSys09', 'TBSys18', 'TBSys14', 'TBSys24', 'TASys08', 'TASys02', 'TASys03', 'TASys11'],
-  reference = ['dev', 'eval']
+  system = ['TBSys09', 'TBSys18', 'TBSys14', 'TBSys24', 'TASys08', 'TASys02', 'TASys03', 'TASys11', 'Baseline'],
+  reference = ['dev', 'eval'],
 )
 
 experiment.set_metric(
@@ -68,14 +68,17 @@ def step(setting, experiment):
     elif setting.reference == 'dev':
         eval_path = './DCASE_2023_Challenge_Task_7_Dataset/dev/' + category + '/'
         # eval_path = './DCASE_2023_Challenge_Task_7_DevDataset/' + category + '/'
-  
-    track = system[1]
-    audio_path = './DCASE_2023_Challenge_Task_7_Submission/AudioFiles/Submissions/' + track + '/' + system + '/' + category + '/'
+
+    if system == 'Baseline':
+      audio_path = './DCASE_2023_Challenge_Task_7_Baseline/' + category + '/'
+    else:
+      track = system[1]
+      audio_path = './DCASE_2023_Challenge_Task_7_Submission/AudioFiles/Submissions/' + track + '/' + system + '/' + category + '/'
 
     fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1)
     
     print(f'FAD SCORE: {fad}')
-
+    
     file_path = experiment.path.fad + setting.identifier() + '_fad'
     np.save(file_path, fad)
     # with open(file_path, 'wb') as file:

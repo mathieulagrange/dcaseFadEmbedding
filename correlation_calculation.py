@@ -19,7 +19,7 @@ for perceptual_eval_sheet_name, df_perceptual_eval_sheet in df_perceptual_eval.i
     df_perceptual_eval_sheet = df_perceptual_eval_sheet.sort_index()
 
     # Drop Baseline row (WARNING: remove this line after we get the dataset for baseline)
-    df_perceptual_eval_sheet = df_perceptual_eval_sheet[df_perceptual_eval_sheet['submission_code'] != 'DCASE2023_baseline_task7']
+    # df_perceptual_eval_sheet = df_perceptual_eval_sheet[df_perceptual_eval_sheet['submission_code'] != 'DCASE2023_baseline_task7']
 
     # Initialize a dictionary entry for this perceptual criteria
     correlation_dict[perceptual_eval_sheet_name] = {}

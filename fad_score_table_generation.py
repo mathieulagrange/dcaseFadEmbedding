@@ -19,6 +19,7 @@ def main(config):
       selector = {"reference":reference, "embedding":embedding},
       path = "fad",
       )
+    
     with pd.ExcelWriter(excel_file, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
       score_list = []
       for idx, (pred, settings_pred) in enumerate(zip(data_pred, settings_pred_total)):
