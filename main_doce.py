@@ -34,7 +34,8 @@ experiment.set_path('correlation', exp_path+experiment.name+'/correlation/', for
 
 experiment.add_plan('fad',
   category = ['dog_bark', 'footstep', 'gunshot', 'keyboard', 'moving_motor_vehicle', 'rain', 'sneeze_cough'],
-  embedding = ['vggish', 'clap-2023', 'clap-laion-audio', 'MERT-v1-95M-1', 'encodec-emb', 'encodec-emb-48k'],
+  embedding = ['vggish', 'clap-2023', 'clap-laion-audio', 'clap-laion-music', 'MERT-v1-95M-1', 
+               'MERT-v1-95M-11', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k'],
   # system = ['TASys02', 'TASys03', 'TASys04', 'TASys05', 'TASys06', 'TASys07', 'TASys08', 'TASys10', 'TASys11',\
   #           'TBSys01', 'TBSys02', 'TBSys03', 'TBSys04', 'TBSys05', 'TBSys07', 'TBSys08', 'TBSys09', 'TBSys11', \
   #             'TBSys14', 'TBSys15', 'TBSys16', 'TBSys17', 'TBSys18', 'TBSys19', 'TBSys20', 'TBSys21', 'TBSys22', \
@@ -78,7 +79,7 @@ def step(setting, experiment):
     fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1)
     
     print(f'FAD SCORE: {fad}')
-    
+
     file_path = experiment.path.fad + setting.identifier() + '_fad'
     np.save(file_path, fad)
     # with open(file_path, 'wb') as file:
