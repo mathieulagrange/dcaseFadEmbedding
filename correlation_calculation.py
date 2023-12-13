@@ -2,9 +2,16 @@ import pandas as pd
 from scipy.stats import pearsonr
 import numpy as np
 
+# Define a custom function to format float values
+def custom_float_format(value):
+    if isinstance(value, float):
+        return "{:.2f}".format(value)
+    return value
+
 # Read the Excel files
 df_fad_scores = pd.read_excel('./excel_files/fadScores.xlsx', index_col='alg_code', sheet_name=None)
 df_perceptual_eval = pd.read_excel('./excel_files/perceptualEval.xlsx', index_col='alg_code', sheet_name=None)
+show_p_value = False
 
 # Initialize a dictionary to store correlations
 correlation_dict = {}
@@ -52,8 +59,8 @@ for perceptual_eval_sheet_name, df_perceptual_eval_sheet in df_perceptual_eval.i
         
         # Calculation the correlation of the merged categories array (7x more data points) and add it to the correlation_table_dict
         correlation_merged, p_value_merged = pearsonr(fad_scores_merged, perceptual_eval_merged)
-        correlation_table_dict['global_corr'] = correlation_merged
-        p_value_table_dict['global_corr'] = p_value_merged
+        correlation_table_dict['global'] = correlation_merged
+        p_value_table_dict['global'] = p_value_merged
 
         # Calculate the average correlation of each category and add it to the correlation_table_dict
         avg_category = np.mean(list(correlation_table_dict.values()))
@@ -75,8 +82,11 @@ correlation_df = correlation_df.stack().unstack(2)
 correlation_df = correlation_df.swaplevel().unstack()
 correlation_df.reset_index(inplace=True)
 
-# Rename the columns of the multi-index columns to simplify the output
-correlation_df.columns = [f'{col[1]}__{col[0]}' if col[1] else col[0] for col in correlation_df.columns]
+if show_p_value:
+    # Rename the columns of the multi-index columns to simplify the output
+    correlation_df.columns = [f'{col[1]}__{col[0]}' if col[1] else col[0] for col in correlation_df.columns]
+else:
+    correlation_df = pd.concat([correlation_df.level_0, correlation_df.level_1, correlation_df.correlation], axis=1)
 
 # set criteria and category as indices, and rename them again
 correlation_df = correlation_df.set_index(['level_0', 'level_1'])
@@ -85,5 +95,13 @@ correlation_df = correlation_df.rename_axis(index={'level_0': 'criteria', 'level
 # reorder criteria and category
 correlation_df = correlation_df.reorder_levels([1, 0], axis=0).sort_index(axis=0, level=[0, 1]).sort_index(axis=1)
 
+# put global_corr and avg_category in first and second row
+row_global = correlation_df.xs(key='global', level='category', drop_level=False)
+row_avg_category = correlation_df.xs(key='avg_category', level='category', drop_level=False)
+correlation_df = correlation_df.drop(index=['global', 'avg_category'], level='category')
+correlation_df = pd.concat([row_global, row_avg_category, correlation_df])
+
+formatted_df = correlation_df.map(custom_float_format)
+
 # Save the final_df DataFrame to an Excel file
-correlation_df.to_excel('./excel_files/correlation.xlsx')
+formatted_df.to_excel('./excel_files/correlation.xlsx')
