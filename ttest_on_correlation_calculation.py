@@ -1,14 +1,7 @@
 import pandas as pd
 from scipy.stats import pearsonr
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
-
-# Define a custom function to format float values
-def custom_float_format(value):
-    if isinstance(value, float):
-        return "{:.2f}".format(value)
-    return value
 
 # Read the Excel files
 df_fad_scores = pd.read_excel('./excel_files/fadScores.xlsx', index_col='alg_code', sheet_name=None)
