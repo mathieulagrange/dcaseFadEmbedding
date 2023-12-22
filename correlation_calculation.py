@@ -1,6 +1,7 @@
 import pandas as pd
 from scipy.stats import pearsonr
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Define a custom function to format float values
 def custom_float_format(value):
@@ -12,7 +13,6 @@ def custom_float_format(value):
 df_fad_scores = pd.read_excel('./excel_files/fadScores.xlsx', index_col='alg_code', sheet_name=None)
 df_perceptual_eval = pd.read_excel('./excel_files/perceptualEval.xlsx', index_col='alg_code', sheet_name=None)
 show_p_value = False
-
 # Initialize a dictionary to store correlations
 correlation_dict = {}
 
@@ -47,6 +47,7 @@ for perceptual_eval_sheet_name, df_perceptual_eval_sheet in df_perceptual_eval.i
         correlation_table_dict = {}
         p_value_table_dict = {}
 
+
         # perceptual_eval_merged and fad_scores_merged are used to calculate global correlation
         perceptual_eval_merged = np.array([])
         fad_scores_merged = np.array([])
@@ -56,20 +57,32 @@ for perceptual_eval_sheet_name, df_perceptual_eval_sheet in df_perceptual_eval.i
             p_value_table_dict[column] = p_value
             perceptual_eval_merged = np.concatenate((perceptual_eval_merged, df_perceptual_eval_sheet[column]))
             fad_scores_merged = np.concatenate((fad_scores_merged, df_fad_scores_sheet[column]))
-        
+
+        correlation_table_noise = []
+        for k in range(100):
+            #noisy predictions
+            std_dev = 1
+            noise = np.random.normal(loc=0, scale=std_dev, size=perceptual_eval_merged.shape)
+            noisy_perceptual_eval_merged = perceptual_eval_merged + noise
+            noisy_perceptual_eval_merged = np.clip(noisy_perceptual_eval_merged, 0, 10)
+            correlation, _ = pearsonr(fad_scores_merged, noisy_perceptual_eval_merged)
+            correlation_table_noise.append(correlation)
+        std_correlation = np.std(correlation_table_noise)
         # Calculation the correlation of the merged categories array (7x more data points) and add it to the correlation_table_dict
         correlation_merged, p_value_merged = pearsonr(fad_scores_merged, perceptual_eval_merged)
-        correlation_table_dict['global'] = correlation_merged
-        p_value_table_dict['global'] = p_value_merged
 
         # Calculate the average correlation of each category and add it to the correlation_table_dict
         avg_category = np.mean(list(correlation_table_dict.values()))
+        correlation_table_dict['global'] = correlation_merged
+        correlation_table_dict['global_std'] = std_correlation
+        p_value_table_dict['global'] = p_value_merged
         correlation_table_dict['avg_category'] = avg_category
         p_value_table_dict['avg_category'] = None
-        
+
         correlation_dict[perceptual_eval_sheet_name][fad_scores_sheet_name]['correlation'] = correlation_table_dict
-        correlation_dict[perceptual_eval_sheet_name][fad_scores_sheet_name]['p_value'] = p_value_table_dict
-        
+        if show_p_value:
+            correlation_dict[perceptual_eval_sheet_name][fad_scores_sheet_name]['p_value'] = p_value_table_dict
+
 # Convert correlation_dict to a pandas DataFrame
 correlation_df = pd.DataFrame.from_dict({(i, j, k): correlation_dict[i][j][k] 
                                          for i in correlation_dict.keys() 
@@ -97,9 +110,10 @@ correlation_df = correlation_df.reorder_levels([1, 0], axis=0).sort_index(axis=0
 
 # put global_corr and avg_category in first and second row
 row_global = correlation_df.xs(key='global', level='category', drop_level=False)
+row_global_std = correlation_df.xs(key='global_std', level='category', drop_level=False)
 row_avg_category = correlation_df.xs(key='avg_category', level='category', drop_level=False)
-correlation_df = correlation_df.drop(index=['global', 'avg_category'], level='category')
-correlation_df = pd.concat([row_global, row_avg_category, correlation_df])
+correlation_df = correlation_df.drop(index=['global', 'avg_category', 'global_std'], level='category')
+correlation_df = pd.concat([row_global, row_global_std, row_avg_category, correlation_df])
 
 formatted_df = correlation_df.map(custom_float_format)
 
