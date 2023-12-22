@@ -1,18 +1,14 @@
 import main_doce
 import pandas as pd
-from textwrap import wrap
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from scipy.stats import pearsonr, spearmanr
 import pandas as pd
-import argparse
 
-def main(config):
-  reference = 'eval'
+reference = 'eval'
 
-  excel_file = './excel_files/fadScores.xlsx'
+excel_file = './excel_files/fadScores.xlsx'
 
-  embedding_list = main_doce.experiment.fad.embedding
+embedding_list = main_doce.experiment.fad.embedding
+
+with pd.ExcelWriter(excel_file, engine='openpyxl', mode='w') as writer:
 
   for embedding in embedding_list:
     (data_pred, settings_pred_total, header_pred_total) = main_doce.experiment.get_output(
@@ -22,25 +18,20 @@ def main(config):
       )
     if len(data_pred) == 0:
       continue
-    with pd.ExcelWriter(excel_file, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-      score_list = []
-      for idx, (pred, settings_pred) in enumerate(zip(data_pred, settings_pred_total)):
-          pairs = settings_pred.split(', ')
-          dict_system_info = dict(pair.split('=') for pair in pairs)
-          dict_system_info ['fad'] = pred.item()
-          dict_system_info ['reference'] = reference
-          dict_system_info ['embedding'] = embedding
-          score_list.append(dict_system_info)
 
-      df = pd.DataFrame(score_list)
-      df = df.rename(columns={'system': 'alg_code'})
+    score_list = []
+    for idx, (pred, settings_pred) in enumerate(zip(data_pred, settings_pred_total)):
+        pairs = settings_pred.split(', ')
+        dict_system_info = dict(pair.split('=') for pair in pairs)
+        dict_system_info ['fad'] = pred.item()
+        dict_system_info ['reference'] = reference
+        dict_system_info ['embedding'] = embedding
+        score_list.append(dict_system_info)
 
-      df = df.pivot(index='alg_code', columns='category', values='fad')
+    df = pd.DataFrame(score_list)
+    df = df.rename(columns={'system': 'alg_code'})
 
-      df['avg_category_FAD'] = df.mean(axis=1)
-      df.to_excel(writer, index=True, sheet_name=dict_system_info['embedding'])
+    df = df.pivot(index='alg_code', columns='category', values='fad')
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Modifies fadScores.xlsx to add the FAD for the new specified embeddings')
-    config = parser.parse_args()
-    main(config)
+    df['avg_category_FAD'] = df.mean(axis=1)
+    df.to_excel(writer, index=True, sheet_name=dict_system_info['embedding'])
