@@ -17,6 +17,12 @@ python3 main_doce.py -s reference=eval -c
 
 This will create subfolders for every category folder in "DCASE_2023_Challenge_Task_7_Submission" and "DCASE_2023_Challenge_Task_7_Dataset" which will contain the embeddings. The FAD calculation results are stored in experiment/fad_embeddings/fad as npy files.
 
+Use this bash command to remove every folder linked the the calculation of a specific embedding my-emb:
+
+```
+find . -type d -name "my-emb" -exec rm -r {} +
+```
+
 ## Correlation calculation
 
 Launch the following code for modifying "fadScores.xlsx" with your new results
