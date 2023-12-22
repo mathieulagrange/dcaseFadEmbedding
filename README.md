@@ -36,3 +36,9 @@ Launch the following code to create a new "correlation.xlsx" file:
 ```
 python3 correlation_calculation.py
 ```
+
+Launch the following code to perform a t-test between the mean correlations of 'wavegram-logmel' and the other embeddings:
+
+```
+python3 ttest_on_correlation_calculation.py
+```
