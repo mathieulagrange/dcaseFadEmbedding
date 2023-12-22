@@ -36,14 +36,17 @@ experiment.add_plan('fad',
   category = ['dog_bark', 'footstep', 'gunshot', 'keyboard', 'moving_motor_vehicle', 'rain', 'sneeze_cough'],
   # embedding = ['vggish', 'clap-2023', 'clap-laion-audio', 'clap-laion-music', 'MERT-v1-95M-1', 
   #             'MERT-v1-95M-11', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k'],
-  embedding = ['clap-2023', 'clap-laion-audio', 'clap-laion-music', 'vggish', 'MERT-v1-95M-1', 'MERT-v1-95M-2', 
-               'MERT-v1-95M-3', 'MERT-v1-95M-4', 'MERT-v1-95M-5', 'MERT-v1-95M-6', 'MERT-v1-95M-7', 'MERT-v1-95M-8', 
-               'MERT-v1-95M-9', 'MERT-v1-95M-10', 'MERT-v1-95M-11', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k', 
-               'dac-44kHz', 'cdpam-acoustic', 'cdpam-content'],
+  embedding = ['clap-2023', 'clap-laion-audio', 'clap-laion-music', 'vggish', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k', 
+               'dac-44kHz', 'cdpam-acoustic', 'cdpam-content', 'panns-cnn14-32k', 'panns-cnn14-16k', 'panns-wavegram-logmel', 
+               #panns-1s, 'hubert-base', 'hubert-large', 'whisper-tiny', 'whisper-small', 'whisper-base', 
+               #'whisper-medium', 'whisper-large',
+               'w2v2-base', 'w2v2-large', 'wavlm-base-plus', 'wavlm-base', 'wavlm-large'],
+  # embedding = ['clap-2023', 'clap-laion-audio', 'clap-laion-music', 'vggish', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k', 
+  #             'dac-44kHz', 'cdpam-acoustic', 'cdpam-content', 'panns-cnn14-32k', 'panns-wavegram-logmel'],
   # system = ['TASys02', 'TASys03', 'TASys04', 'TASys05', 'TASys06', 'TASys07', 'TASys08', 'TASys10', 'TASys11',\
   #           'TBSys01', 'TBSys02', 'TBSys03', 'TBSys04', 'TBSys05', 'TBSys07', 'TBSys08', 'TBSys09', 'TBSys11', \
   #             'TBSys14', 'TBSys15', 'TBSys16', 'TBSys17', 'TBSys18', 'TBSys19', 'TBSys20', 'TBSys21', 'TBSys22', \
-  #               'TBSys23', 'TBSys24', 'TBSys25', 'TBSys26', 'TBSys27', 'TBSys28', 'TBSys29', 'TBSys30', 'TBSys31'],
+  #               'TBSys23', 'TBSys24', 'TBSys25', 'TBSys26', 'TBSys27', 'TBSys28', 'TBSys29', 'TBSys30', 'TBSys31', 'Baseline'],
   system = ['TBSys09', 'TBSys18', 'TBSys14', 'TBSys24', 'TASys08', 'TASys02', 'TASys03', 'TASys11', 'Baseline'],
   reference = ['dev', 'eval'],
 )
@@ -64,6 +67,8 @@ def step(setting, experiment):
     print('XXXXXXXX ONGOING SETTING XXXXXXXX')
     print(setting.identifier())
 
+    force_emb_calc = False
+    audio_len = 4
     system = setting.system
     category = setting.category
 
@@ -80,7 +85,7 @@ def step(setting, experiment):
       track = system[1]
       audio_path = './DCASE_2023_Challenge_Task_7_Submission/AudioFiles/Submissions/' + track + '/' + system + '/' + category + '/'
 
-    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1)
+    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1, force_emb_calc=force_emb_calc, audio_len=audio_len)
     
     print(f'FAD SCORE: {fad}')
 
