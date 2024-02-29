@@ -12,7 +12,7 @@ np.random.seed(0)
 classes = ['Dog Bark', 'Footstep', 'Gunshot', 'Keyboard', 'Moving Motor Vehicle', 'Rain', 'Sneeze/Cough']
 classes_fname = ['dog_bark', 'footstep', 'gunshot', 'keyboard', 'moving_motor_vehicle', 'rain', 'sneeze_cough']
 embeddings = ['VGGish', 'MS-CLAP', 'PANN-WGM-LOGMEL']
-embeddings_fname = ['dcase_vggish_full', 'dcase_clap-2023_full', 'dcase_panns-wavegram-logmel_full']
+embeddings_fname = ['dcase_vggish', 'dcase_clap-2023', 'dcase_panns-wavegram-logmel']
 
 fads = []
 for e in embeddings_fname:
