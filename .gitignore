@@ -169,3 +169,6 @@ doce
 0-old
 experiment
 fadtk/fadtk/.model-checkpoints
+audioset_dataset/
+kymatio/
+0-old-Audiset/
