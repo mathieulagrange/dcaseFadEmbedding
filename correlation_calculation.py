@@ -9,6 +9,19 @@ def custom_float_format(value):
         return "{:.2f}".format(value)
     return value
 
+def get_noisy_correlation_table(perceptual_eval, fad_scores, iterations=100):
+    correlation_table_noise = []
+    for k in range(iterations):
+        #noisy predictions
+        std_dev = 1
+        noise = np.random.normal(loc=0, scale=std_dev, size=perceptual_eval.shape)
+        noisy_perceptual_eval = perceptual_eval + noise
+        noisy_perceptual_eval = np.clip(noisy_perceptual_eval, 0, 10)
+        correlation, _ = pearsonr(fad_scores, noisy_perceptual_eval)
+        correlation_table_noise.append(correlation)
+    std_correlation = np.std(correlation_table_noise)
+    return(correlation_table_noise, std_correlation)
+
 # Read the Excel files
 df_fad_scores = pd.read_excel('./excel_files/fadScores.xlsx', index_col='alg_code', sheet_name=None)
 df_perceptual_eval = pd.read_excel('./excel_files/perceptualEval.xlsx', index_col='alg_code', sheet_name=None)
@@ -58,16 +71,11 @@ for perceptual_eval_sheet_name, df_perceptual_eval_sheet in df_perceptual_eval.i
             perceptual_eval_merged = np.concatenate((perceptual_eval_merged, df_perceptual_eval_sheet[column]))
             fad_scores_merged = np.concatenate((fad_scores_merged, df_fad_scores_sheet[column]))
 
-        correlation_table_noise = []
-        for k in range(100):
-            #noisy predictions
-            std_dev = 1
-            noise = np.random.normal(loc=0, scale=std_dev, size=perceptual_eval_merged.shape)
-            noisy_perceptual_eval_merged = perceptual_eval_merged + noise
-            noisy_perceptual_eval_merged = np.clip(noisy_perceptual_eval_merged, 0, 10)
-            correlation, _ = pearsonr(fad_scores_merged, noisy_perceptual_eval_merged)
-            correlation_table_noise.append(correlation)
-        std_correlation = np.std(correlation_table_noise)
+            _, std_correlation_col = get_noisy_correlation_table(df_perceptual_eval_sheet[column], df_fad_scores_sheet[column])
+            correlation_table_dict[column+'_std'] = std_correlation_col
+
+        _, std_correlation = get_noisy_correlation_table(perceptual_eval_merged, fad_scores_merged)
+        
         # Calculation the correlation of the merged categories array (7x more data points) and add it to the correlation_table_dict
         correlation_merged, p_value_merged = pearsonr(fad_scores_merged, perceptual_eval_merged)
 
