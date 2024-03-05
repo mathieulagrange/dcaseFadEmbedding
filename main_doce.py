@@ -75,7 +75,6 @@ def step(setting, experiment):
     print(setting.identifier())
 
     force_emb_calc = False
-    force_cov_calc = False
     audio_len = 4
     system = setting.system
     category = setting.category
@@ -93,7 +92,7 @@ def step(setting, experiment):
       track = system[1]
       audio_path = './DCASE_2023_Challenge_Task_7_Submission/AudioFiles/Submissions/' + track + '/' + system + '/' + category + '/'
 
-    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1, force_emb_calc=force_emb_calc, force_cov_calc=force_cov_calc, audio_len=audio_len)
+    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1, force_emb_calc=force_emb_calc, audio_len=audio_len)
     
     print(f'FAD SCORE: {fad}')
 
