@@ -36,8 +36,8 @@ experiment.add_plan('fad',
   category = ['dog_bark', 'footstep', 'gunshot', 'keyboard', 'moving_motor_vehicle', 'rain', 'sneeze_cough'],
   # embedding = ['vggish', 'clap-2023', 'clap-laion-audio', 'clap-laion-music', 'MERT-v1-95M-1', 
   #             'MERT-v1-95M-11', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k'],
-  embedding = ['clap-2023', 'clap-laion-audio', 'clap-laion-music', 'vggish', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k', 
-               'dac-44kHz', 'cdpam-acoustic', 'cdpam-content', 'panns-cnn14-32k', 'panns-cnn14-16k', 'panns-wavegram-logmel', 
+  embedding = ['clap-2023', 'clap-2023-emb128', 'clap-laion-audio', 'clap-laion-music', 'vggish', 'MERT-v1-95M', 'encodec-emb', 'encodec-emb-48k', 
+               'dac-44kHz', 'cdpam-acoustic', 'cdpam-content', 'panns-cnn14-32k', 'panns-cnn14-16k', 'panns-wavegram-logmel', 'panns-wavegram-logmel-1s', 'panns-wavegram-logmel-emb128',
                #panns-1s, 'hubert-base', 'hubert-large', 'whisper-tiny', 'whisper-small', 'whisper-base', 
                #'whisper-medium', 'whisper-large',
                'w2v2-base', 'w2v2-large', 'wavlm-base-plus', 'wavlm-base', 'wavlm-large'],
@@ -68,6 +68,7 @@ def step(setting, experiment):
     print(setting.identifier())
 
     force_emb_calc = False
+    force_cov_calc = False
     audio_len = 4
     system = setting.system
     category = setting.category
@@ -85,7 +86,7 @@ def step(setting, experiment):
       track = system[1]
       audio_path = './DCASE_2023_Challenge_Task_7_Submission/AudioFiles/Submissions/' + track + '/' + system + '/' + category + '/'
 
-    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1, force_emb_calc=force_emb_calc, audio_len=audio_len)
+    fad = calculate_fad(model_type=setting.embedding, baseline=eval_path, eval=audio_path, workers=1, force_emb_calc=force_emb_calc, force_cov_calc=force_cov_calc, audio_len=audio_len)
     
     print(f'FAD SCORE: {fad}')
 
