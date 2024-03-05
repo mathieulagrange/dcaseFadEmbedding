@@ -51,6 +51,13 @@ experiment.add_plan('fad',
   reference = ['dev', 'eval'],
 )
 
+experiment.add_plan('fademb128',
+  category = ['dog_bark', 'footstep', 'gunshot', 'keyboard', 'moving_motor_vehicle', 'rain', 'sneeze_cough'],
+  embedding = ['clap-2023-emb128', 'panns-wavegram-logmel-emb128'],
+  system = ['TBSys09', 'TBSys18', 'TBSys14', 'TBSys24', 'TASys08', 'TASys02', 'TASys03', 'TASys11', 'Baseline'],
+  reference = ['dev', 'eval'],
+)
+
 experiment.set_metric(
   name = 'fad',
   path = 'output',
