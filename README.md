@@ -6,8 +6,17 @@ Make sure you have downloaded the two datasets which should be named "DCASE_2023
 
 Install 'requirements.txt' before running the code.
 Launch 'get_doce.py' to get the latest version of doce (see doce documentation here: [DOCE](https://doce.readthedocs.io/en/latest/))
+```bash
+git clone https://github.com/mathieulagrange/dcaseFadEmbedding.git
+cd dcaseFadEmbedding
+python3 get_doce.py
+pip install -r requirements.txt
+```
 
 Launch 'create_merged_dcase_dataset.py' to create a merged dataset from the evaluation set and the developpment set.
+```bash
+python3 create_merged_dcase_dataset.py
+```
 
 Launch 'download_audioset.py' to download audioset in .ogg format, and launch 'convert_audioset.py' to convert this dataset into a 10-s segments audio dataset sampled at 32kHz.
 
