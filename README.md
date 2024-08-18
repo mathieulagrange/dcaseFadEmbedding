@@ -1,5 +1,9 @@
 # dcaseFadEmbedding
 
+## FAD Toolkit
+For general FAD calculations using various embeddings (e.g., PANNS, CLAP), 
+please refer to our [fadtk](https://github.com/DCASE2024-Task7-Sound-Scene-Synthesis/fadtk) repository.
+
 ## Setup
 
 Make sure you have downloaded the two datasets which should be named "DCASE_2023_Challenge_Task_7_Submission", "DCASE_2023_Challenge_Task_7_Dataset" and "DCASE_2023_Challenge_Task_7_Baseline" which should be placed in the main folder. 
